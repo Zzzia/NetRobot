@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="541.0" minWidth="10.0" percentWidth="90.0" prefWidth="540.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="295.0" minWidth="10.0" percentWidth="10.0" prefWidth="60.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <TextField fx:id="input_target" prefHeight="107.0" prefWidth="540.0" promptText="输入网址">
+                    <GridPane.margin>
+                        <Insets right="5.0" />
+                    </GridPane.margin>
+                </TextField>
+                <Button fx:id="button_test" mnemonicParsing="false" prefHeight="98.0" prefWidth="60.0" text="测试" GridPane.columnIndex="1" />
+            </children>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+        </GridPane>
+        <GridPane prefHeight="134.0" prefWidth="600.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <TextArea fx:id="input_cookies" prefHeight="245.0" prefWidth="300.0" promptText="Cookies" wrapText="true">
+                    <GridPane.margin>
+                        <Insets bottom="5.0" right="5.0" top="5.0" />
+                    </GridPane.margin>
+                </TextArea>
+                <TextArea fx:id="input_formData" prefHeight="185.0" prefWidth="300.0" promptText="FormData" wrapText="true" GridPane.columnIndex="1">
+                    <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" top="5.0" />
+                    </GridPane.margin>
+                </TextArea>
+            </children>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+        </GridPane>
+        <TextArea fx:id="tv" prefHeight="180.0" prefWidth="580.0" promptText="状态">
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+        </TextArea>
+        <FlowPane prefHeight="18.0" prefWidth="580.0">
+            <children>
+                <HBox prefHeight="27.0" prefWidth="142.0">
+                    <children>
+                        <Label prefHeight="25.0" prefWidth="107.0" text="时间间隔（ms）">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="input_interval" prefHeight="0.0" prefWidth="36.0" text="50">
+                            <opaqueInsets>
+                                <Insets />
+                            </opaqueInsets>
+                            <HBox.margin>
+                                <Insets left="5.0" />
+                            </HBox.margin>
+                        </TextField>
+                    </children>
+                </HBox>
+                <Button fx:id="button_start" mnemonicParsing="false" text="开始">
+                    <FlowPane.margin>
+                        <Insets left="10.0" />
+                    </FlowPane.margin>
+                </Button>
+            <Button fx:id="button_stop" mnemonicParsing="false" text="停止">
+               <FlowPane.margin>
+                  <Insets left="10.0" />
+               </FlowPane.margin>
+            </Button>
+            <HBox prefHeight="10.0" prefWidth="200.0">
+               <FlowPane.margin>
+                  <Insets left="10.0" />
+               </FlowPane.margin>
+               <children>
+                  <Label prefHeight="27.0" prefWidth="69.0" text="字符匹配">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="match_left" prefHeight="27.0" prefWidth="70.0">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Label prefHeight="43.0" prefWidth="8.0" text="-" />
+                  <TextField fx:id="match_right" prefHeight="27.0" prefWidth="70.0">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            </children>
+            <VBox.margin>
+                <Insets top="5.0" />
+            </VBox.margin>
+        </FlowPane>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+</VBox>
