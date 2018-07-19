@@ -115,8 +115,10 @@ public class NetUtil {
             connection.setRequestProperty(entry.getKey(), entry.getValue());
         }
         // 处理post请求
-        if (!doGet && parametersBuilder != null) {
+        if (!doGet) {
             connection.setRequestMethod("POST");
+        }
+        if (parametersBuilder != null) {
             connection.setDoOutput(true);
             OutputStream outputStream = connection.getOutputStream();
             outputStream.write(parametersBuilder.getParameters().getBytes());
@@ -138,45 +140,6 @@ public class NetUtil {
         if (connectFinishListener != null) connectFinishListener.onFinish(rs);
         return rs;
     }
-
-//    private static String get(String url, String encodeType, ParametersBuilder parametersBuilder) throws IOException {
-//        StringBuilder result = new StringBuilder();
-//        BufferedReader in = null;
-//        // post请求的参数
-//        URL realUrl = new URL(url);
-//        // 打开和URL之间的连接
-//        HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
-//        connection.setDoInput(true);
-//        connection.setRequestMethod("GET");
-//        connection.setConnectTimeout(5000);
-//        connection.setReadTimeout(5000);
-//        connection.setRequestProperty("accept", "*/*");
-//        connection.setRequestProperty("connection", "Keep-Alive");
-//        connection.setRequestProperty("Charsert", "UTF-8");
-//        connection.setRequestProperty("user-agent",
-//                "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-//        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//        if (parametersBuilder != null) {
-//            connection.setRequestMethod("POST");
-//            connection.setDoOutput(true);
-//            OutputStream outputStream = connection.getOutputStream();
-//            outputStream.write(parametersBuilder.getParameters().getBytes());
-//            outputStream.flush();
-//            outputStream.close();
-//        }
-//        // 建立实际的连接
-//        connection.connect();
-//        // 定义 BufferedReader输入流来读取URL的响应
-//        in = new BufferedReader(new InputStreamReader(connection.getInputStream(), encodeType));
-//        String line;
-//        while ((line = in.readLine()) != null) {
-//            result.append(line);
-//        }
-//        in.close();
-//        connection.disconnect();
-//        if (openLog) System.out.println(result);
-//        return result.toString();
-//    }
 
     public static class Builder {
         private String url = "";
@@ -218,6 +181,12 @@ public class NetUtil {
         public Builder doPost(ParametersBuilder parametersBuilder) {
             this.doGet = false;
             this.parametersBuilder = parametersBuilder;
+            return this;
+        }
+
+        public Builder doPostAppend(String append) {
+            this.doGet = false;
+            this.url += append;
             return this;
         }
 

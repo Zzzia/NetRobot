@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="NetRobot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NetRobot_jar</output-path>
+    <root id="archive" name="NetRobot.jar">
+      <element id="module-output" name="NetRobot" />
+    </root>
+  </artifact>
+</component>

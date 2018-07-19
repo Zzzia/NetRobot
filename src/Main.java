@@ -1,8 +1,8 @@
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -34,6 +34,12 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     private StringBuilder tvContent = new StringBuilder();
     private NetUtil netUtil = null;
 
+    //应用密码
+    private static final String KEY = "ziaiscool";
+    private static final String URL = "http://zzzia.net:8080/key";
+    private static final String APPNAME = "netrobot";
+    private boolean hasKey = false;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
@@ -42,18 +48,15 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         primaryStage.show();
 
 
+        //检查是否有应用使用权
+        checkPassword(primaryStage);
+
+
         //寻找控件
         findId(root);
 
 
-        //设置自动滚动
-        tv.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
-            tv.setScrollTop(Double.MAX_VALUE);
-        });
-
-
         //设置点击事件
-
         //测试按钮
         test.setOnAction(event -> {
             appendContent("开始测试");
@@ -100,7 +103,29 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
 
     }
 
+    private void checkPassword(Stage primaryStage) {
+        try {
+            String result = new NetUtil
+                    .Builder(URL)
+                    .doPostAppend("/?key=netrobot")
+                    .build()
+                    .connect();
+            if (!result.contains(KEY)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("提示");
+                alert.setContentText("服务器已关闭对该应用的支持");
+                alert.show();
+                primaryStage.close();
+            } else {
+                hasKey = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void fucking() {
+        //预留个空指针bug，看谁敢破解密码
         netUtil = getBuilder().build();
         netUtil.fuckingConnect(interval);
     }
@@ -111,6 +136,7 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     }
 
     private NetUtil.Builder getBuilder() {
+        if (!hasKey) return null;
         var builder = new NetUtil
                 .Builder(targetUrl)
                 .openLog(true)
@@ -161,6 +187,7 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     private void appendContent(String content) {
         tvContent.append(content).append("\n");
         tv.setText(tvContent.toString());
+        tv.setScrollTop(Double.MAX_VALUE);
     }
 
     public static void main(String[] args) {
