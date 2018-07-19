@@ -2,10 +2,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import util.TimeUtil;
 import util.netUtil.NetUtil;
@@ -22,6 +20,7 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     private TextField input_target, input_interval, match_left, match_right;
     private TextField time_hour, time_minute;
     private TextArea tv, input_formData, input_cookies;
+    private Hyperlink hyperlink;
 
     //配置
     private String targetUrl = "", formData = "", cookies = "";
@@ -68,6 +67,7 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         start.setOnAction(event -> {
             start.setDisable(true);
             prepareInput();
+            if (targetUrl.isEmpty()) return;
             if (delay) {
                 Date targetDate = TimeUtil.getDate(hour, minute);
                 new Thread(() -> {
@@ -101,6 +101,11 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
             appendContent("已结束");
         });
 
+
+        //超链接
+        hyperlink.setOnAction(event -> {
+            new WebView().getEngine().load("https://github.com/Zzzia/NetUtil");
+        });
     }
 
     private void checkPassword(Stage primaryStage) {
@@ -168,6 +173,7 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         input_cookies = (TextArea) root.lookup("#input_cookies");
         match_left = (TextField) root.lookup("#match_left");
         match_right = (TextField) root.lookup("#match_right");
+        hyperlink = (Hyperlink) root.lookup("#hyperlink");
     }
 
     private void prepareInput() {
