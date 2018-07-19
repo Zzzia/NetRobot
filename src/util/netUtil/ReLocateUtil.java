@@ -1,4 +1,4 @@
-package netUtil;
+package util.netUtil;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

@@ -59,21 +59,21 @@
                 <Insets />
             </VBox.margin>
         </GridPane>
-        <TextArea fx:id="tv" prefHeight="180.0" prefWidth="580.0" promptText="状态">
+        <TextArea fx:id="tv" prefHeight="157.0" prefWidth="580.0" promptText="状态">
             <VBox.margin>
                 <Insets />
             </VBox.margin>
         </TextArea>
         <FlowPane prefHeight="18.0" prefWidth="580.0">
             <children>
-                <HBox prefHeight="27.0" prefWidth="142.0">
+                <HBox prefHeight="27.0" prefWidth="167.0">
                     <children>
                         <Label prefHeight="25.0" prefWidth="107.0" text="时间间隔（ms）">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Label>
-                        <TextField fx:id="input_interval" prefHeight="0.0" prefWidth="36.0" text="50">
+                        <TextField fx:id="input_interval" prefHeight="27.0" prefWidth="51.0" text="50">
                             <opaqueInsets>
                                 <Insets />
                             </opaqueInsets>
@@ -83,19 +83,9 @@
                         </TextField>
                     </children>
                 </HBox>
-                <Button fx:id="button_start" mnemonicParsing="false" text="开始">
-                    <FlowPane.margin>
-                        <Insets left="10.0" />
-                    </FlowPane.margin>
-                </Button>
-            <Button fx:id="button_stop" mnemonicParsing="false" text="停止">
-               <FlowPane.margin>
-                  <Insets left="10.0" />
-               </FlowPane.margin>
-            </Button>
             <HBox prefHeight="10.0" prefWidth="200.0">
                <FlowPane.margin>
-                  <Insets left="10.0" />
+                  <Insets left="20.0" />
                </FlowPane.margin>
                <children>
                   <Label prefHeight="27.0" prefWidth="69.0" text="字符匹配">
@@ -116,11 +106,43 @@
                   </TextField>
                </children>
             </HBox>
+            <HBox prefHeight="27.0" prefWidth="155.0">
+               <children>
+                  <Label prefHeight="27.0" prefWidth="34.0" text="定时">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="time_hour" prefHeight="27.0" prefWidth="45.0" />
+                  <Label prefHeight="35.0" prefWidth="1.0" text=":">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="time_minute" prefHeight="16.0" prefWidth="45.0" />
+               </children>
+               <FlowPane.margin>
+                  <Insets left="20.0" />
+               </FlowPane.margin></HBox>
             </children>
             <VBox.margin>
                 <Insets top="5.0" />
             </VBox.margin>
         </FlowPane>
+      <FlowPane prefHeight="0.0" prefWidth="580.0">
+         <children>
+                <Button fx:id="button_start" mnemonicParsing="false" text="开始">
+                    <FlowPane.margin>
+                        <Insets />
+                    </FlowPane.margin>
+                </Button>
+            <Button fx:id="button_stop" mnemonicParsing="false" text="停止">
+               <FlowPane.margin>
+                  <Insets left="10.0" />
+               </FlowPane.margin>
+            </Button>
+         </children>
+      </FlowPane>
     </children>
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

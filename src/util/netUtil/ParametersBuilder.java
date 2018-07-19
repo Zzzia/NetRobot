@@ -1,4 +1,4 @@
-package netUtil;
+package util.netUtil;
 
 public class ParametersBuilder {
     private StringBuilder parameters = new StringBuilder();

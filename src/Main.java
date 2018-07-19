@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -6,22 +7,28 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import netUtil.NetUtil;
-import netUtil.ParametersBuilder;
-import netUtil.PropertyBuilder;
-import regexUtil.RegexUtil;
+import util.TimeUtil;
+import util.netUtil.NetUtil;
+import util.netUtil.ParametersBuilder;
+import util.netUtil.PropertyBuilder;
+import util.regexUtil.RegexUtil;
+
+import java.util.Date;
 
 public class Main extends Application implements NetUtil.ConnectFinishListener {
 
     //控件
     private Button test, start, stop;
     private TextField input_target, input_interval, match_left, match_right;
+    private TextField time_hour, time_minute;
     private TextArea tv, input_formData, input_cookies;
 
     //配置
     private String targetUrl = "", formData = "", cookies = "";
     private String match_left_string = "", match_right_string = "";
     private int interval = 50;
+    private int hour, minute;
+    private boolean delay = false;//定时
 
     //临时变量
     private StringBuilder tvContent = new StringBuilder();
@@ -33,21 +40,64 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         primaryStage.setTitle("NetRobot");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+
+
+        //寻找控件
         findId(root);
+
+
+        //设置自动滚动
+        tv.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> {
+            tv.setScrollTop(Double.MAX_VALUE);
+        });
+
+
+        //设置点击事件
+
+        //测试按钮
         test.setOnAction(event -> {
             appendContent("开始测试");
             prepareInput();
             test();
         });
+
+        //开始按钮
         start.setOnAction(event -> {
-            appendContent("已开始");
+            start.setDisable(true);
             prepareInput();
-            fucking();
+            if (delay) {
+                Date targetDate = TimeUtil.getDate(hour, minute);
+                new Thread(() -> {
+                    while (true) {
+                        try {
+                            long restTime = targetDate.getTime() - new Date().getTime();//剩余时间
+                            System.out.println(restTime);
+                            if (restTime < 1000) {//不到1s，直接开始运行
+                                appendContent("已开始");
+                                fucking();
+                                break;
+                            } else {
+                                tv.setText("剩余时间：" + restTime / 1000 + "秒");
+                            }
+                            Thread.sleep(500);//由于定时引起的误差，每0.5s检查一次
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            } else {
+                appendContent("已开始");
+                fucking();
+            }
         });
+
+        //暂停按钮
         stop.setOnAction(event -> {
-            appendContent("已结束");
             netUtil.stop();
+            start.setDisable(false);
+            appendContent("已结束");
         });
+
     }
 
     private void fucking() {
@@ -85,6 +135,8 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         stop = (Button) root.lookup("#button_stop");
         input_target = (TextField) root.lookup("#input_target");
         input_interval = (TextField) root.lookup("#input_interval");
+        time_hour = (TextField) root.lookup("#time_hour");
+        time_minute = (TextField) root.lookup("#time_minute");
         tv = (TextArea) root.lookup("#tv");
         input_formData = (TextArea) root.lookup("#input_formData");
         input_cookies = (TextArea) root.lookup("#input_cookies");
@@ -99,6 +151,11 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         interval = Integer.parseInt(input_interval.getText());
         match_left_string = match_left.getText();
         match_right_string = match_right.getText();
+        if (!time_hour.getText().isEmpty() && !time_minute.getText().isEmpty()) {
+            hour = Integer.parseInt(time_hour.getText());
+            minute = Integer.parseInt(time_minute.getText());
+            delay = true;
+        }
     }
 
     private void appendContent(String content) {

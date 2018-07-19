@@ -1,4 +1,4 @@
-package netUtil;
+package util.netUtil;
 
 import java.util.HashMap;
 import java.util.Map;
