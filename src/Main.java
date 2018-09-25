@@ -12,12 +12,14 @@ import util.netUtil.PropertyBuilder;
 import util.regexUtil.RegexUtil;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application implements NetUtil.ConnectFinishListener {
 
     //控件
     private Button test, start, stop;
-    private TextField input_target, input_interval, match_left, match_right;
+    private TextField input_target, input_interval, match_left, match_right, schedule_long;
     private TextField time_hour, time_minute;
     private TextArea tv, input_formData, input_cookies;
     private Hyperlink hyperlink;
@@ -28,6 +30,7 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     private int interval = 50;
     private int hour, minute;
     private boolean delay = false;//定时
+    private Thread delayThread = null;
 
     //临时变量
     private StringBuilder tvContent = new StringBuilder();
@@ -45,6 +48,16 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         primaryStage.setTitle("NetRobot");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+
+
+        primaryStage.setOnCloseRequest(event -> {
+            primaryStage.close();
+            try {
+                stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
 
         //检查是否有应用使用权
@@ -65,46 +78,58 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
 
         //开始按钮
         start.setOnAction(event -> {
+            if (!prepareInput()) {
+                end();
+                return;
+            }
             start.setDisable(true);
-            prepareInput();
+            stop.setDisable(false);
             if (targetUrl.isEmpty()) return;
             if (delay) {
                 Date targetDate = TimeUtil.getDate(hour, minute);
-                new Thread(() -> {
+                delayThread = new Thread(() -> {
                     while (true) {
                         try {
                             long restTime = targetDate.getTime() - new Date().getTime();//剩余时间
-                            System.out.println(restTime);
                             if (restTime < 1000) {//不到1s，直接开始运行
                                 appendContent("已开始");
-                                fucking();
+                                long second = 0;
+                                if (!schedule_long.isDisable()) {
+                                    second = Long.parseLong(schedule_long.getText());
+                                }
+                                fucking(1000L * second);
                                 break;
                             } else {
-                                tv.setText("剩余时间：" + restTime / 1000 + "秒");
+                                tv.setText("剩余等待时间：" + restTime / 1000 + "秒");
                             }
-                            Thread.sleep(500);//由于定时引起的误差，每0.5s检查一次
+                            Thread.sleep(500L);//由于定时引起的误差，每0.5s检查一次
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-                }).start();
+                });
+                delayThread.start();
             } else {
                 appendContent("已开始");
                 fucking();
             }
         });
 
-        //暂停按钮
-        stop.setOnAction(event -> {
-            netUtil.stop();
-            start.setDisable(false);
-            appendContent("已结束");
-        });
+        //停止按钮
+        stop.setOnAction(event -> end());
 
 
         //超链接
-        hyperlink.setOnAction(event -> {
-            new WebView().getEngine().load("https://github.com/Zzzia/NetUtil");
+        hyperlink.setOnAction(event -> new WebView().getEngine().load("https://github.com/Zzzia/NetUtil"));
+
+
+        //监听是否定时
+        time_hour.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.isEmpty()) {
+                schedule_long.setDisable(false);
+            } else {
+                schedule_long.setDisable(true);
+            }
         });
     }
 
@@ -130,9 +155,22 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     }
 
     private void fucking() {
+        fucking(0);
+    }
+
+    private void fucking(long timeout) {
         //预留个空指针bug，看谁敢破解密码
         netUtil = getBuilder().build();
         netUtil.fuckingConnect(interval);
+        if (timeout != 0) {
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    end();
+                }
+            }, timeout);
+        }
     }
 
     private void test() {
@@ -140,9 +178,21 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         netUtil.connect(1);
     }
 
+    private void end() {
+        if (netUtil != null){
+            netUtil.stop();
+        }
+        if (delayThread != null && delayThread.isAlive()){
+            delayThread.stop();
+        }
+        start.setDisable(false);
+        stop.setDisable(true);
+        appendContent("已结束");
+    }
+
     private NetUtil.Builder getBuilder() {
         if (!hasKey) return null;
-        var builder = new NetUtil
+        NetUtil.Builder builder = new NetUtil
                 .Builder(targetUrl)
                 .openLog(true)
                 .connectFinishListener(this);
@@ -174,9 +224,10 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
         match_left = (TextField) root.lookup("#match_left");
         match_right = (TextField) root.lookup("#match_right");
         hyperlink = (Hyperlink) root.lookup("#hyperlink");
+        schedule_long = (TextField) root.lookup("#schedule_long");
     }
 
-    private void prepareInput() {
+    private boolean prepareInput() {
         targetUrl = input_target.getText();
         cookies = input_cookies.getText();
         formData = input_formData.getText();
@@ -187,6 +238,15 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
             hour = Integer.parseInt(time_hour.getText());
             minute = Integer.parseInt(time_minute.getText());
             delay = true;
+        }
+        if (targetUrl.isEmpty()) {
+            appendContent("目标网址不能为空");
+            return false;
+        } else if (hour < 0 || hour > 24 || minute < 0 || minute > 60) {
+            appendContent("时间为24小时制");
+            return false;
+        } else {
+            return true;
         }
     }
 
