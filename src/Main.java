@@ -120,7 +120,22 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
 
 
         //超链接
-        hyperlink.setOnAction(event -> new WebView().getEngine().load("https://github.com/Zzzia/NetUtil"));
+        hyperlink.setOnAction(event -> {
+            try {
+                // 创建一个URI实例
+                java.net.URI uri = java.net.URI.create("https://github.com/Zzzia/NetRobot");
+                // 获取当前系统桌面扩展
+                java.awt.Desktop dp = java.awt.Desktop.getDesktop();
+                // 判断系统桌面是否支持要执行的功能
+                if (dp.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                    // 获取系统默认浏览器打开链接
+                    dp.browse(uri);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
 
         //监听是否定时
@@ -129,6 +144,13 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
                 schedule_long.setDisable(false);
             } else {
                 schedule_long.setDisable(true);
+            }
+        });
+
+        //关闭软件监听，防止内存泄漏
+        primaryStage.setOnCloseRequest(event -> {
+            if (netUtil != null){
+                netUtil.stop();
             }
         });
     }
@@ -179,10 +201,10 @@ public class Main extends Application implements NetUtil.ConnectFinishListener {
     }
 
     private void end() {
-        if (netUtil != null){
+        if (netUtil != null) {
             netUtil.stop();
         }
-        if (delayThread != null && delayThread.isAlive()){
+        if (delayThread != null && delayThread.isAlive()) {
             delayThread.stop();
         }
         start.setDisable(false);

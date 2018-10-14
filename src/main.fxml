@@ -165,7 +165,7 @@
                         <Insets left="2.0" />
                      </HBox.margin>
                      </Label>
-                     <TextField fx:id="schedule_long" alignment="CENTER" disable="true" prefWidth="50.0" text="10">
+                     <TextField fx:id="schedule_long" alignment="CENTER" disable="true" prefWidth="50.0" text="3">
                          <HBox.margin>
                              <Insets />
                          </HBox.margin>
