@@ -45,7 +45,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TextArea fx:id="input_cookies" prefHeight="245.0" prefWidth="300.0" promptText="Cookies" wrapText="true">
+                <TextArea fx:id="input_headers" prefHeight="245.0" prefWidth="300.0" promptText="Headers" wrapText="true">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>

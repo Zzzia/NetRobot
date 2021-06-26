@@ -5,15 +5,20 @@ import java.util.Map;
 
 public class PropertyBuilder {
 
-    private Map<String, String> propertys = getDefaultProperty();
+    private final Map<String, String> properties = getDefaultProperty();
 
     public PropertyBuilder addProperty(String key, String value) {
-        propertys.put(key, value);
+        properties.put(key, value);
+        return this;
+    }
+
+    public PropertyBuilder addProperty(Map<String,String> properties) {
+        this.properties.putAll(properties);
         return this;
     }
 
     public Map<String, String> getProperty() {
-        return propertys;
+        return properties;
     }
 
     private Map<String, String> getDefaultProperty() {
