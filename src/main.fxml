@@ -45,12 +45,14 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TextArea fx:id="input_headers" prefHeight="245.0" prefWidth="300.0" promptText="Headers" wrapText="true">
+                <TextArea fx:id="input_headers" prefHeight="245.0" prefWidth="300.0"
+                          promptText="Headers，一行一个，例如：&#13;cookie:xxxx&#13;origin: https://github.com" wrapText="true">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </TextArea>
-                <TextArea fx:id="input_formData" prefHeight="185.0" prefWidth="300.0" promptText="FormData" wrapText="true" GridPane.columnIndex="1">
+                <TextArea fx:id="input_formData" prefHeight="185.0" prefWidth="300.0" promptText="FormData，通过&amp;拼接，例如：&#13;query=NetRobot&amp;user=123"
+                          wrapText="true" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets left="5.0" />
                     </GridPane.margin>
